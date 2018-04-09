@@ -1,5 +1,5 @@
 import telebot
-from constants import token
+from const import token
 
 bot = telebot.TeleBot(token)
 print(bot.get_me())
@@ -30,6 +30,8 @@ def handel_text(message):
 
 @bot.message_handler(commands=['help'])
 def handle_text(message):
+    user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+    user_markup.row('newnew', 'new')
     bot.send_message(message.chat.id, "Помощи нет")
     log(message)
 
@@ -44,6 +46,13 @@ def handle_text(message):
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
+    elif message == message:
+        bot.send_message(message.from_user.id, message.text)
+
+
+@bot.message_handler(func=lambda m: True)
+def echo_all(message):
+    bot.reply_to(message, message.text)
 
 
 # определение айди стикера по ласт упд
