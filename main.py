@@ -2,12 +2,12 @@ import telebot
 from const import tokenTele, token
 import vk_api
 bot = telebot.TeleBot(tokenTele)
-print(bot.get_me())
-
 vk_session = vk_api.VkApi(token=token)
 tools = vk_api.VkTools(vk_session)
-wall = tools.get_all('wall.get', 100, {'owner_id': 177047189})
 friends = tools.get_all('friends.search', 90)
+# for z in range(len(friends['items'])):
+#     if friends['items'][z]['first_name'] == 'Nikita':
+#         print(friends['items'][z]['id'])
 
 
 def log(message):
@@ -21,7 +21,7 @@ def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
     user_markup.row('oh shit. I am sorry!', '/help')
-    user_markup.row('Отправить сообщеине вк')
+    user_markup.row('Загрузить моих друзей из VK')
     user_markup.row('/start', '/stop')
     bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
@@ -52,7 +52,7 @@ def handle_text(message):
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
-    elif message.text == 'Отправить сообщеине вк':
+    elif message.text == 'Загрузить моих друзей из VK':
         user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
         item = telebot.types.KeyboardButton('Назад')
         user_markup.add(item)
@@ -62,13 +62,11 @@ def handle_text(message):
             user_markup.add(item)
         bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     elif message == message:
-        bot.send_message(message.from_user.id, message.text)
+        for q in range(len(friends['items'])):
+            if message.text == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
+                bot.send_message(message.from_user.id, friends['items'][q]['id'])
 
 
-@bot.message_handler(func=lambda m: True)
-def echo_all(message):
-    bot.reply_to(message, message.text)
-
-
+# ождиание ввода + отправка сообщение по айди
 # определение айди стикера по ласт упд
 bot.polling(none_stop=True, interval=0)
