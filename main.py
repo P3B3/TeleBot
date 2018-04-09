@@ -1,13 +1,13 @@
 import telebot
 from const import tokenTele, token
 import vk_api
-bot = telebot.TeleBot(tokenTele)
+import time
+bot = telebot.TeleBot(tokenTele, 0)
 vk_session = vk_api.VkApi(token=token)
+vk = vk_session.get_api()
+
 tools = vk_api.VkTools(vk_session)
 friends = tools.get_all('friends.search', 90)
-# for z in range(len(friends['items'])):
-#     if friends['items'][z]['first_name'] == 'Nikita':
-#         print(friends['items'][z]['id'])
 
 
 def log(message):
@@ -60,11 +60,13 @@ def handle_text(message):
             item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
                                                 friends['items'][i]['last_name'])
             user_markup.add(item)
-        bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
+        bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
     elif message == message:
+        markup = telebot.types.ForceReply(selective=False)
         for q in range(len(friends['items'])):
             if message.text == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
-                bot.send_message(message.from_user.id, friends['items'][q]['id'])
+                bot.send_message(message.from_user.id, 'Введите сообщение:', reply_markup=markup)
+                vk.messages.send(user_id=friends['items'][q]['id'], message=message.text)
 
 
 # ождиание ввода + отправка сообщение по айди
