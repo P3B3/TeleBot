@@ -7,8 +7,7 @@ print(bot.get_me())
 vk_session = vk_api.VkApi(token=token)
 tools = vk_api.VkTools(vk_session)
 wall = tools.get_all('wall.get', 100, {'owner_id': 177047189})
-friends = tools.get_all
-print('Friends count:', friends)
+friends = tools.get_all('friends.search', 90)
 
 
 def log(message):
@@ -55,8 +54,11 @@ def handle_text(message):
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
     elif message.text == 'Отправить сообщеине вк':
         user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-        for i in range(0, 5):
-            item = telebot.types.KeyboardButton('b')
+        item = telebot.types.KeyboardButton('Назад')
+        user_markup.add(item)
+        for i in range(len(friends['items'])):
+            item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
+                                                friends['items'][i]['last_name'])
             user_markup.add(item)
         bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     elif message == message:
