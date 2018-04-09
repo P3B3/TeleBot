@@ -1,8 +1,14 @@
 import telebot
-from const import token
-
-bot = telebot.TeleBot(token)
+from const import tokenTele, token
+import vk_api
+bot = telebot.TeleBot(tokenTele)
 print(bot.get_me())
+
+vk_session = vk_api.VkApi(token=token)
+tools = vk_api.VkTools(vk_session)
+wall = tools.get_all('wall.get', 100, {'owner_id': 177047189})
+friends = tools.get_all
+print('Friends count:', friends)
 
 
 def log(message):
@@ -16,6 +22,7 @@ def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
     user_markup.row('oh shit. I am sorry!', '/help')
+    user_markup.row('Отправить сообщеине вк')
     user_markup.row('/start', '/stop')
     bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
@@ -31,8 +38,8 @@ def handel_text(message):
 @bot.message_handler(commands=['help'])
 def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-    user_markup.row('newnew', 'new')
-    bot.send_message(message.chat.id, "Помощи нет")
+    user_markup.row('/start', '/stop')
+    bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
 
 
@@ -46,6 +53,12 @@ def handle_text(message):
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
+    elif message.text == 'Отправить сообщеине вк':
+        user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+        for i in range(0, 5):
+            item = telebot.types.KeyboardButton('b')
+            user_markup.add(item)
+        bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     elif message == message:
         bot.send_message(message.from_user.id, message.text)
 
