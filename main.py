@@ -14,9 +14,9 @@ def log(message):
 @bot.message_handler(commands=['start'])
 def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-    user_markup.row('/start', '/stop')
     user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
-    user_markup.row('oh shit. I am sorry!')
+    user_markup.row('oh shit. I am sorry!', '/help')
+    user_markup.row('/start', '/stop')
     bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
 
@@ -24,7 +24,7 @@ def handle_text(message):
 @bot.message_handler(commands=['stop'])
 def handel_text(message):
     hide_markup = telebot.types.ReplyKeyboardRemove(True)
-    bot.send_message(message.from_user.id, '..', reply_markup=hide_markup)
+    bot.send_message(message.from_user.id, 'meh', reply_markup=hide_markup)
     log(message)
 
 
@@ -46,4 +46,5 @@ def handle_text(message):
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
 
 
+# определение айди стикера по ласт упд
 bot.polling(none_stop=True, interval=0)
