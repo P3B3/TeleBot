@@ -1,7 +1,6 @@
 import telebot
 from const import tokenTele, token
 import vk_api
-import time
 
 bot = telebot.TeleBot(tokenTele)
 vk_session = vk_api.VkApi(token=token)
@@ -66,7 +65,6 @@ def handle_text(message):
         global friend_id
         friend_id = find_friend_id(friends, message.text)
         bot.send_message(message.from_user.id, 'Введи сообщение:')
-                #  vk.messages.send(user_id=friends['items'][q]['id'], message=message.text)
     elif message == message:
         vk.messages.send(user_id=friend_id, message=message.text)
         bot.send_message(message.from_user.id, 'Отправлено:')
