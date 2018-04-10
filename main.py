@@ -67,6 +67,7 @@ def handle_text(message):
         bot.send_message(message.from_user.id, 'Введи сообщение:')
     elif message == message:
         vk.messages.send(user_id=friend_id, message=message.text)
+        friend_id = 0
         bot.send_message(message.from_user.id, 'Отправлено:')
 
 
