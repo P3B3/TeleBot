@@ -2,7 +2,8 @@ import telebot
 from const import tokenTele, token
 import vk_api
 import time
-bot = telebot.TeleBot(tokenTele, 0)
+
+bot = telebot.TeleBot(tokenTele)
 vk_session = vk_api.VkApi(token=token)
 vk = vk_session.get_api()
 
@@ -61,14 +62,26 @@ def handle_text(message):
                                                 friends['items'][i]['last_name'])
             user_markup.add(item)
         bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
+    elif message.text == find_friend(friends, message.text):
+        global friend_id
+        friend_id = find_friend_id(friends, message.text)
+        bot.send_message(message.from_user.id, 'Введи сообщение:')
+                #  vk.messages.send(user_id=friends['items'][q]['id'], message=message.text)
     elif message == message:
-        markup = telebot.types.ForceReply(selective=False)
-        for q in range(len(friends['items'])):
-            if message.text == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
-                bot.send_message(message.from_user.id, 'Введите сообщение:', reply_markup=markup)
-                vk.messages.send(user_id=friends['items'][q]['id'], message=message.text)
+        vk.messages.send(user_id=friend_id, message=message.text)
+        bot.send_message(message.from_user.id, 'Отправлено:')
 
 
-# ождиание ввода + отправка сообщение по айди
-# определение айди стикера по ласт упд
+def find_friend(friends, message):
+    for q in range(len(friends['items'])):
+        if message == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
+            return message
+
+
+def find_friend_id(friends, message):
+    for q in range(len(friends['items'])):
+        if message == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
+            return friends['items'][q]['id']
+
+
 bot.polling(none_stop=True, interval=0)
