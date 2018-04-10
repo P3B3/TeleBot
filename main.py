@@ -1,8 +1,14 @@
 import telebot
-from constants import token
+from const import tokenTele, token
+import vk_api
+import time
 
-bot = telebot.TeleBot(token)
-print(bot.get_me())
+bot = telebot.TeleBot(tokenTele)
+vk_session = vk_api.VkApi(token=token)
+vk = vk_session.get_api()
+
+tools = vk_api.VkTools(vk_session)
+friends = tools.get_all('friends.search', 90)
 
 
 def log(message):
@@ -16,6 +22,7 @@ def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
     user_markup.row('oh shit. I am sorry!', '/help')
+    user_markup.row('Загрузить моих друзей из VK')
     user_markup.row('/start', '/stop')
     bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
@@ -30,7 +37,9 @@ def handel_text(message):
 
 @bot.message_handler(commands=['help'])
 def handle_text(message):
-    bot.send_message(message.chat.id, "Помощи нет")
+    user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+    user_markup.row('/start', '/stop')
+    bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
     log(message)
 
 
@@ -44,7 +53,35 @@ def handle_text(message):
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
+    elif message.text == 'Загрузить моих друзей из VK':
+        user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+        item = telebot.types.KeyboardButton('Назад')
+        user_markup.add(item)
+        for i in range(len(friends['items'])):
+            item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
+                                                friends['items'][i]['last_name'])
+            user_markup.add(item)
+        bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
+    elif message.text == find_friend(friends, message.text):
+        global friend_id
+        friend_id = find_friend_id(friends, message.text)
+        bot.send_message(message.from_user.id, 'Введи сообщение:')
+                #  vk.messages.send(user_id=friends['items'][q]['id'], message=message.text)
+    elif message == message:
+        vk.messages.send(user_id=friend_id, message=message.text)
+        bot.send_message(message.from_user.id, 'Отправлено:')
 
 
-# определение айди стикера по ласт упд
+def find_friend(friends, message):
+    for q in range(len(friends['items'])):
+        if message == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
+            return message
+
+
+def find_friend_id(friends, message):
+    for q in range(len(friends['items'])):
+        if message == friends['items'][q]['first_name'] + ' ' + friends['items'][q]['last_name']:
+            return friends['items'][q]['id']
+
+
 bot.polling(none_stop=True, interval=0)
