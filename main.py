@@ -75,7 +75,7 @@ def handle_text(message):
             for i in range(len(friends['items'])):
                 item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
                                                     friends['items'][i]['last_name'])
-            user_markup.add(item)
+                user_markup.add(item)
             bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
         else:
             bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
@@ -91,9 +91,11 @@ def handle_text(message):
 
     elif message == message:
         if message.from_user.id == const.my_id:
-            vk.messages.send(user_id=friend_id, message=message.text)
-            friend_id = 0
-            bot.send_message(message.from_user.id, 'Отправлено!')
+            if friend_id == 0:
+                bot.send_message(message.from_user.id, 'Выбери друга!')
+            else:
+                vk.messages.send(user_id=friend_id, message=message.text)
+                friend_id = 0
         else:
             bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
         log(message)
