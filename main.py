@@ -2,6 +2,7 @@ import telebot
 import const
 import vk_api
 
+
 bot = telebot.TeleBot(const.tokenTele)
 vk_session = vk_api.VkApi(token=const.token)
 vk = vk_session.get_api()
@@ -38,7 +39,7 @@ def handel_text(message):
 def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('/start', '/stop')
-    bot.send_message(message.from_user.id, "Привет!", reply_markup=user_markup)
+    bot.send_message(message.from_user.id, message.from_user.id, reply_markup=user_markup)
     log(message)
 
 
@@ -47,11 +48,16 @@ def handle_text(message):
     if message.text == 'А токен на гитхаб не залил?':
         bot.send_sticker(message.from_user.id, "CAADBAADVgADgFwlA4KN7F0OMsfZAg")
         log(message)
+
     elif message.text == 'а что еще?':
-        bot.send_message(message.from_user.id, 'Ничего. Я устал')
+        if message.from_user.id == const.my_id:
+            bot.send_message(message.from_user.id, 'Избранный')
+        else:
+            bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
+
     elif message.text == 'Назад':
         user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
         user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
@@ -59,23 +65,38 @@ def handle_text(message):
         user_markup.row('Загрузить моих друзей из VK')
         user_markup.row('/start', '/stop')
         bot.send_message(message.from_user.id, "Как скажешь.", reply_markup=user_markup)
+
     elif message.text == 'Загрузить моих друзей из VK':
-        user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-        item = telebot.types.KeyboardButton('Назад')
-        user_markup.add(item)
-        for i in range(len(friends['items'])):
-            item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
-                                                friends['items'][i]['last_name'])
+        if message.from_user.id == const.my_id:
+            log(message)
+            user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+            item = telebot.types.KeyboardButton('Назад')
             user_markup.add(item)
-        bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
+            for i in range(len(friends['items'])):
+                item = telebot.types.KeyboardButton(friends['items'][i]['first_name'] + ' ' +
+                                                    friends['items'][i]['last_name'])
+            user_markup.add(item)
+            bot.send_message(message.from_user.id, "Выберите друга!", reply_markup=user_markup)
+        else:
+            bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
+
     elif message.text == find_friend(friends, message.text):
         global friend_id
-        friend_id = find_friend_id(friends, message.text)
-        bot.send_message(message.from_user.id, 'Введи сообщение:')
+        if message.from_user.id == const.my_id:
+            friend_id = find_friend_id(friends, message.text)
+            bot.send_message(message.from_user.id, 'Введи сообщение:')
+        else:
+            bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
+        log(message)
+
     elif message == message:
-        vk.messages.send(user_id=friend_id, message=message.text)
-        friend_id = 0
-        bot.send_message(message.from_user.id, 'Отправлено!')
+        if message.from_user.id == const.my_id:
+            vk.messages.send(user_id=friend_id, message=message.text)
+            friend_id = 0
+            bot.send_message(message.from_user.id, 'Отправлено!')
+        else:
+            bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
+        log(message)
 
 
 def find_friend(friends, message):
