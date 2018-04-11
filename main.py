@@ -20,7 +20,7 @@ def log(message):
 @bot.message_handler(commands=['start'])
 def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-    user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
+    user_markup.row('А токен на гитхаб не залил?', 'Узнать мой tg id')
     user_markup.row('oh shit. I am sorry!', '/help')
     user_markup.row('Загрузить моих друзей из VK')
     user_markup.row('/start', '/stop')
@@ -39,7 +39,8 @@ def handel_text(message):
 def handle_text(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row('/start', '/stop')
-    bot.send_message(message.from_user.id, message.from_user.id, reply_markup=user_markup)
+    bot.send_message(message.from_user.id, "Нажмите Загрузить друзей, после выберите друга и напишите ему сообщение",
+                     reply_markup=user_markup)
     log(message)
 
 
@@ -49,21 +50,21 @@ def handle_text(message):
         bot.send_sticker(message.from_user.id, "CAADBAADVgADgFwlA4KN7F0OMsfZAg")
         log(message)
 
-    elif message.text == 'а что еще?':
+    elif message.text == 'Узнать мой tg id':
         if message.from_user.id == const.my_id:
             bot.send_message(message.from_user.id, 'Избранный')
         else:
-            bot.send_sticker(message.from_user.id, "CAADBAADsgADgFwlAx7zizgz_W5GAg")
+            bot.send_message(message.from_user.id, message.from_user.id)
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
 
     elif message.text == 'Назад':
         user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-        user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
-        user_markup.row('oh shit. I am sorry!', '/help')
+        user_markup.row('А токен на гитхаб не залил?', 'Узнать мой tg id')
+        user_markup.row('oh shit. I am sorry!')
         user_markup.row('Загрузить моих друзей из VK')
-        user_markup.row('/start', '/stop')
+        user_markup.row('/stop', '/help')
         bot.send_message(message.from_user.id, "Как скажешь.", reply_markup=user_markup)
 
     elif message.text == 'Загрузить моих друзей из VK':
