@@ -18,7 +18,7 @@ pip install pyTelegramBotAPI
 <h1>Start</h1>
 
 1. Create const.py
-2. Add tokenTele (telegram bot token), token (vk token) in const.py
+2. Add tokenTele (telegram bot token), token (vk token), my_id (you telegram id) in const.py
 3. Run main
 4. Chose load friends vk
 5. Chose friend
