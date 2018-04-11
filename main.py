@@ -1,9 +1,9 @@
 import telebot
-from const import tokenTele, token
+import const
 import vk_api
 
-bot = telebot.TeleBot(tokenTele)
-vk_session = vk_api.VkApi(token=token)
+bot = telebot.TeleBot(const.tokenTele)
+vk_session = vk_api.VkApi(token=const.token)
 vk = vk_session.get_api()
 
 tools = vk_api.VkTools(vk_session)
@@ -52,6 +52,13 @@ def handle_text(message):
         log(message)
     elif message.text == 'oh shit. I am sorry!':
         bot.send_sticker(message.from_user.id, "CAADBAADNQMAAkMxogY12wEWrMirqgI")
+    elif message.text == 'Назад':
+        user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
+        user_markup.row('А токен на гитхаб не залил?', 'а что еще?')
+        user_markup.row('oh shit. I am sorry!', '/help')
+        user_markup.row('Загрузить моих друзей из VK')
+        user_markup.row('/start', '/stop')
+        bot.send_message(message.from_user.id, "Как скажешь.", reply_markup=user_markup)
     elif message.text == 'Загрузить моих друзей из VK':
         user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
         item = telebot.types.KeyboardButton('Назад')
@@ -68,7 +75,7 @@ def handle_text(message):
     elif message == message:
         vk.messages.send(user_id=friend_id, message=message.text)
         friend_id = 0
-        bot.send_message(message.from_user.id, 'Отправлено:')
+        bot.send_message(message.from_user.id, 'Отправлено!')
 
 
 def find_friend(friends, message):
@@ -83,4 +90,5 @@ def find_friend_id(friends, message):
             return friends['items'][q]['id']
 
 
-bot.polling(none_stop=True, interval=0)
+if __name__ == "__main__":
+    bot.polling(none_stop=True, interval=0)
